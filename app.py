@@ -137,5 +137,8 @@ def remove_media(project_id, filename):
     
     return redirect(url_for('edit_project', project_id=project_id))
 
-if __name__ == '__main__':
-    app.run(debug=True)
+import os
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
