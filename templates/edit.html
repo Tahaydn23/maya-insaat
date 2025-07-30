@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Projeyi Düzenle</title>
+</head>
+<body>
+  <h1>{{ project.name }} Projesini Düzenle</h1>
+
+  <form method="POST" enctype="multipart/form-data">
+    <label>Yeni Medya Ekle:</label><br>
+    <input type="file" name="media_files" multiple><br><br>
+    <button type="submit">Kaydet</button>
+  </form>
+
+<h2>Mevcut Medyalar</h2>
+{% for media in project.media %}
+  <div style="margin-bottom:20px;">
+    {% if media.endswith(('jpg','jpeg','png','webp','gif')) %}
+      <img src="{{ url_for('static', filename='uploads/' + media) }}" width="150">
+    {% elif media.endswith(('mp4','webm','avi','mov')) %}
+      <video src="{{ url_for('static', filename='uploads/' + media) }}" width="200" controls></video>
+    {% endif %}
+    <form method="POST" action="{{ url_for('remove_media', project_id=project._id, filename=media) }}" style="display:inline;">
+      <button type="submit" onclick="return confirm('Bu medyayı silmek istediğine emin misin?')">Kaldır</button>
+    </form>
+  </div>
+
+  
+{% endfor %}

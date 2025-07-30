@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maya İnşaat</title>
+
+  <style>
+    :root {
+      --primary: #004e89;
+      --accent: #f2c94c;
+      --bg: #ffffff;
+      --text: #222;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      opacity: 0;
+      animation: slideFadeIn 1.3s ease-out forwards;
+    }
+
+    .contact-left,
+    .contact-right {
+      position: absolute;
+      top: 130px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .contact-left { left: 30px; }
+    .contact-right {
+      right: 30px;
+      color: white;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: 120px auto 0;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 250px;
+    }
+
+    .card:hover { transform: translateY(-5px); }
+    .card img, .card video {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+    }
+
+    footer {
+      background: #eee;
+      padding: 20px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      padding-top: 80px;
+      left: 0; top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.9);
+    }
+
+    .lightbox-content {
+      margin: auto;
+      display: block;
+      width: 80%;
+      max-width: 800px;
+    }
+
+    .close {
+      position: absolute;
+      top: 30px;
+      right: 45px;
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      padding: 16px;
+      color: white;
+      font-weight: bold;
+      font-size: 30px;
+      user-select: none;
+    }
+
+    .prev { left: 10px; }
+    .next { right: 10px; }
+
+    @keyframes slideFadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 2rem; }
+      .contact-left, .contact-right {
+        position: static;
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+      }
+    }
+
+ .project-wrapper {
+  display: inline-block;
+  margin: 10px;
+  text-align: center;
+}
+
+.project-name {
+  margin-top: 6px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #333;
+}
+
+.logo-container {
+  text-align: center;
+  margin: 30px 0 40px 0; /* üst 30px, alt 40px boşluk */
+}
+
+.logo-container img {
+  max-height: 300px;     /* boyutu büyüttük */
+  width: auto;
+  display: inline-block; /* ortalamayı düzgün yapar */
+}
+
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="contact-left">
+    Mahmut Yaşa<br>📞 +90 542 423 26 44
+  </div>
+  <div class="contact-right">
+    <div style="display: flex; align-items: center; gap: 5px;">
+      <div>
+
+        <strong>Muhammed Yaşa</strong><br>
+        📞 <a href="tel:+905332353607" style="color: white; text-decoration: none;">+90 533 235 36 07</a>
+      </div>
+      <a href="https://wa.me/905332353607" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" style="width: 20px; height: 20px;">
+      </a>
+    </div>
+  </div>
+
+  <h1>MAYA İNŞAAT</h1>
+
+
+</header>
+
+<div class="logo-container">
+  <img src="{{ url_for('static', filename='uploads/logo.png') }}" alt="Maya İnşaat Logo">
+</div>
+
+
+<section id="galeri" class="gallery">
+  {% for project in projects %}
+    <div class="project-wrapper">
+      <div class="card" onclick="openProjectLightbox({{ loop.index0 }})">
+        {% if project.media %}
+          {% set first = project.media[0]['filename'] if project.media[0] is mapping else project.media[0] %}
+          {% set ext = first.split('.')[-1] %}
+          {% if ext in ['jpg', 'jpeg', 'png', 'webp', 'gif'] %}
+            <img src="{{ url_for('static', filename='uploads/' + first) }}" alt="{{ project.name }}">
+          {% elif ext in ['mp4', 'mov', 'avi', 'webm'] %}
+            <video muted autoplay loop>
+              <source src="{{ url_for('static', filename='uploads/' + first) }}">
+            </video>
+          {% endif %}
+        {% else %}
+          <img src="https://via.placeholder.com/300x250?text=Görsel+Yok" alt="Yok">
+        {% endif %}
+      </div>
+      <div class="project-name">{{ project.name }}</div>
+    </div>
+  {% endfor %}
+</section>
+
+
+
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox">
+  <span class="close" onclick="closeLightbox()">&times;</span>
+  <div class="lightbox-content" id="lightboxContent"></div>
+  <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+  <a class="next" onclick="changeSlide(1)">&#10095;</a>
+</div>
+
+<script>
+  const projectsData = {{ projects | tojson | safe }};
+  let currentProject = [];
+  let currentIndex = 0;
+
+  function openProjectLightbox(projectIndex) {
+    currentProject = projectsData[projectIndex].media;
+    currentIndex = 0;
+    showMedia(currentIndex);
+    document.getElementById("lightbox").style.display = "block";
+  }
+
+  function closeLightbox() {
+    document.getElementById("lightbox").style.display = "none";
+  }
+
+  function showMedia(index) {
+    const content = document.getElementById("lightboxContent");
+    const file = currentProject[index];
+    const ext = file.split('.').pop().toLowerCase();
+    const src = `/static/uploads/${file}`;
+
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+      content.innerHTML = `<img src="${src}" style="max-width:100%">`;
+    } else if (['mp4', 'mov', 'avi', 'webm'].includes(ext)) {
+      content.innerHTML = `<video controls autoplay style="max-width:100%"><source src="${src}"></video>`;
+    }
+  }
+
+  function changeSlide(dir) {
+    currentIndex = (currentIndex + dir + currentProject.length) % currentProject.length;
+    showMedia(currentIndex);
+  }
+
+  window.onclick = function(e) {
+    if (e.target.id === "lightbox") closeLightbox();
+  };
+</script>
+
+<footer>
+  © 2025 MAYA İnşaat. Tüm Hakları Saklıdır.<br>
+  <a href="https://www.instagram.com/mayainsaat_" target="_blank">Instagram</a> |
+  <a href="https://www.facebook.com/seninhesabin" target="_blank">Facebook</a>
+</footer>
+
+</body>
+</html>
