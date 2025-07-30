@@ -169,6 +169,37 @@
   width: auto;
   display: inline-block; /* ortalamayı düzgün yapar */
 }
+/* === GENEL HEADER DÜZENİ === */
+header{
+  display:flex;               /* blokları yatayda yan yana diz */
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;             /* dar ekranda satır kaydırabilsin */
+  padding:15px 10px;
+  background:#004a82;         /* mevcut mavi zemin örnek */
+  color:#fff;
+  font-weight:600;
+}
+
+/* soldaki ve sağdaki metinler */
+.contact-left,
+.contact-right{
+  text-align:center;          /* mobilde ortalanmış görünsün */
+  margin:8px 0;               /* mobilde üst-alt boşluk */
+  font-size:1rem;
+}
+
+/* ====== MOBİL KIRILIM ====== */
+@media (max-width:768px){
+  header{
+    flex-direction:column;    /* blokları alt alta diz */
+  }
+  /* ikonlu numara satırı daha sıkı olsun */
+  .contact-left,
+  .contact-right{
+    font-size:.95rem;
+  }
+}
 
   </style>
 </head>
